@@ -18,7 +18,7 @@ class _ScreenColumnState extends State<ScreenColumn> {
 
   void _addItem() {
     setState(() {
-      _items.add('Дополнительный документ номер ${_counter++}');
+      _items.add('Документ ${_counter++} студента');
     });
   }
 
@@ -45,20 +45,18 @@ class _ScreenColumnState extends State<ScreenColumn> {
               const SizedBox(height: 8),
               SizedBox(
                 height: 240,
-                child: Scrollbar(
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: List.generate(_items.length, (idx) {
-                        final item = _items[idx];
-                        return ListTile(
-                          title: Text(item),
-                          trailing: IconButton(
-                            icon: const Icon(Icons.delete),
-                            onPressed: () => _removeItem(idx),
-                          ),
-                        );
-                      }),
-                    ),
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: List.generate(_items.length, (idx) {
+                      final item = _items[idx];
+                      return ListTile(
+                        title: Text(item),
+                        trailing: IconButton(
+                          icon: const Icon(Icons.delete),
+                          onPressed: () => _removeItem(idx),
+                        ),
+                      );
+                    }),
                   ),
                 ),
               ),
