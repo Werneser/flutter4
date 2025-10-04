@@ -14,11 +14,16 @@ class _ScreenColumnState extends State<ScreenColumn> {
     'Справка о доходах',
     'Фото паспортного размера',
   ];
+
   int _counter = 1;
 
-  void _addItem() {
+  Future<void> _addItem() async {
+    final String? newName = await _showNameInputDialog(context);
     setState(() {
-      _items.add('Документ ${_counter++} студента');
+      final String name = (newName == null || newName.trim().isEmpty)
+          ? 'Дополнительный документ номер ${_counter++}'
+          : newName.trim();
+      _items.add(name);
     });
   }
 
@@ -26,6 +31,35 @@ class _ScreenColumnState extends State<ScreenColumn> {
     setState(() {
       if (index >= 0 && index < _items.length) _items.removeAt(index);
     });
+  }
+
+  Future<String?> _showNameInputDialog(BuildContext context) async {
+    final TextEditingController controller = TextEditingController();
+    return showDialog<String>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Введите имя файла документа'),
+          content: TextField(
+            controller: controller,
+            decoration: const InputDecoration(
+              hintText: 'Например: Заявление на госуслуги',
+            ),
+            autofocus: true,
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(null),
+              child: const Text('Отмена'),
+            ),
+            ElevatedButton(
+              onPressed: () => Navigator.of(context).pop(controller.text),
+              child: const Text('Сохранить'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
