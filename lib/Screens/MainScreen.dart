@@ -3,7 +3,6 @@ import 'ScreenColumn.dart';
 import 'ScreenListView.dart';
 import 'ScreenListViewSeparated.dart';
 
-
 void main() {
   runApp(const MyApp());
 }
@@ -28,19 +27,20 @@ class MainScreen extends StatefulWidget {
   _MainScreenState createState() => _MainScreenState();
 }
 
-class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
-  late final TabController _tabController;
+class _MainScreenState extends State<MainScreen> {
+  int _currentIndex = 0;
 
-  @override
-  void initState() {
-    super.initState();
-    _tabController = TabController(length: 3, vsync: this);
-  }
+  // Секции экрана: Column, ListView, ListView.separated
+  final List<Widget> _screens = const [
+    ScreenColumn(),
+    ScreenListView(),
+    ScreenListViewSeparated(),
+  ];
 
-  @override
-  void dispose() {
-    _tabController.dispose();
-    super.dispose();
+  void _onItemTapped(int index) {
+    setState(() {
+      _currentIndex = index;
+    });
   }
 
   @override
@@ -48,21 +48,34 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Списки по подаче документов'),
-        bottom: TabBar(
-          controller: _tabController,
-          tabs: const [
-            Tab(text: 'Column'),
-            Tab(text: 'ListView'),
-            Tab(text: 'ListView.separated'),
-          ],
-        ),
       ),
-      body: TabBarView(
-        controller: _tabController,
-        children: const [
-          ScreenColumn(),
-          ScreenListView(),
-          ScreenListViewSeparated(),
+      body: IndexedStack(
+        index: _currentIndex,
+        children: _screens,
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _currentIndex,
+        onTap: _onItemTapped,
+        type: BottomNavigationBarType.fixed, // можно менять на shifting
+        backgroundColor: Colors.white,
+        selectedItemColor: Colors.blue,
+        unselectedItemColor: Colors.grey,
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.view_column),
+            activeIcon: Icon(Icons.view_column),
+            label: 'Column',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.list),
+            activeIcon: Icon(Icons.list),
+            label: 'ListView',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.view_list),
+            activeIcon: Icon(Icons.view_list),
+            label: 'Separated',
+          ),
         ],
       ),
     );
